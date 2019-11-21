@@ -20,6 +20,16 @@ def main(): #{
     # rn = RedeNeural(0.2, 10001)
     rn = RedeNeural(taxaAprencizado, qtdEpocas)
     rn.treinar(rn, x)
+    parar = False
+    while(not parar):
+        rn.testar(rn)
+        print()
+        print('1- testar de novo')
+        print('2- terminar')
+        opcao = int(input('Opção: '))
+        if(opcao == 2):
+            parar =True
+            print('Falou!')
 
     # oculta, saida = rn.feedForward(x[1])
     # novoPesoEO, novoPesoOS = rn.backpropagation([0, 0, 0], oculta, saida)
@@ -70,8 +80,8 @@ class RedeNeural(object):#{
         ocultaComSig = self.sigmoide(ocultaSemSig[-1])
 
         # Aqui é feita exatamente a mesma coisa entre oculta e saída
-        saidaSemSig = ocultaComSig.dot(self.pesos[1] + self.biases[1])
-        saidaComSig = self.sigmoide((saidaSemSig))
+        saidaSemSig = ocultaComSig.dot(self.pesos[1]) + self.biases[1]
+        saidaComSig = self.sigmoide((saidaSemSig[-1]))
 
         # Retorno então os valores encontrados para a oculta e para a saída
         return ocultaComSig, saidaComSig
@@ -109,7 +119,7 @@ class RedeNeural(object):#{
             countIter = 0
             i = 0
             perda = 1
-            while(i<len(entrada) and perda > 0.22):
+            while(i<len(entrada) and perda > 0.24):
                 oculta, saida = redeNeural.feedForward(entrada[i])
                 novoPesoEO, novoPesoOS = redeNeural.backpropagation([0, 0, 0], oculta, saida)
 
@@ -134,13 +144,21 @@ class RedeNeural(object):#{
 
                 i += 1
                 countIter += 1
-            if(perda < 0.22):
+            if(perda < 0.24):
                 print('Fora do loop.')
                 print(f'count iterações = {countIter}')
                 print(f'epoca: {epoca}')
                 print(f'perda: {perda}')
                 break
     #}
+
+    def testar(self, redeNeural):
+        entrada1 = int(input('Primeira entrada (1 ou 0): '))
+        entrada2 = int(input('Segunda entrada (1 ou 0): '))
+        oculta, saida = self.feedForward([entrada1, entrada2])
+        print(f'Entrada1 = {entrada1}')
+        print(f'Entrada2 = {entrada2}')
+        print(f'Saída = {saida}')
 
     def erroQuadratico(self, esperado, obtido):
         return (0.5*(esperado - obtido)*(esperado - obtido))/2
