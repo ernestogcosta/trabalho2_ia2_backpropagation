@@ -112,8 +112,6 @@ class RedeNeural(object):#{
             while(i<len(entrada) and perda > 0.22):
                 oculta, saida = redeNeural.feedForward(entrada[i])
                 novoPesoEO, novoPesoOS = redeNeural.backpropagation([0, 0, 0], oculta, saida)
-                self.pesos[0] += novoPesoEO
-                self.pesos[1] += novoPesoOS
 
                 # O erro/perda é calculada pelo MSE (Mean Sum Squared Loss, Média da soma quadrática da perda)
                 # sendo que este é dado pela função de média do numpy
@@ -126,6 +124,12 @@ class RedeNeural(object):#{
                 print(f'Saída obtida: {saida}')
                 # print(f'Erro quadrático: {erro}')
                 print(f'Erro: {perda}')
+                print(f'PesosEO originais: {self.pesos[0]}')
+                print(f'PesosOS originais: {self.pesos[1]}')
+                self.pesos[0] += novoPesoEO
+                self.pesos[1] += novoPesoOS
+                print(f'PesosEO novos: {self.pesos[0]}')
+                print(f'PesosOS novos: {self.pesos[1]}')
                 print('--------------------------------------------------')
 
                 i += 1
