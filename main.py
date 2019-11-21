@@ -12,7 +12,13 @@ def main(): #{
          [0, 1, 1],
          [1, 0, 1],
          [1, 1, 0]]
-    rn = RedeNeural(0.05, 1000)
+    y = np.copy(x)
+
+    taxaAprencizado = float(input('Valor taxa de aprendizado: '))
+    qtdEpocas = int(input('Quantidade de épocas: '))
+
+    # rn = RedeNeural(0.2, 10001)
+    rn = RedeNeural(taxaAprencizado, qtdEpocas)
     rn.treinar(rn, x)
 
     # oculta, saida = rn.feedForward(x[1])
@@ -100,24 +106,36 @@ class RedeNeural(object):#{
 
     def treinar(self, redeNeural, entrada): #{
         for epoca in range(self.epoca):
+            countIter = 0
             i = 0
-            while(i<len(entrada)):
+            perda = 1
+            while(i<len(entrada) and perda > 0.22):
                 oculta, saida = redeNeural.feedForward(entrada[i])
                 novoPesoEO, novoPesoOS = redeNeural.backpropagation([0, 0, 0], oculta, saida)
                 self.pesos[0] += novoPesoEO
                 self.pesos[1] += novoPesoOS
-                i += 1
 
-                print(f'Época: {epoca}')
-                print(f'Entrada: {entrada[0:2]}')
-                print(f'Saída esperada: {entrada[2]}')
-                print(f'Saída obtida: {saida}')
                 # O erro/perda é calculada pelo MSE (Mean Sum Squared Loss, Média da soma quadrática da perda)
                 # sendo que este é dado pela função de média do numpy
                 # é a média da raiz das entradas subtraindo-se a saída
-                print(f'Erro: {str(np.mean(np.square(entrada[0:2] - saida)))}')
+                perda = float(np.mean(np.square(entrada[0:2] - saida)))
+
+                print(f'Época: {epoca}')
+                print(f'Entrada: {entrada[i][0:2]}')
+                print(f'Saída esperada: {entrada[i][2]}')
+                print(f'Saída obtida: {saida}')
+                # print(f'Erro quadrático: {erro}')
+                print(f'Erro: {perda}')
                 print('--------------------------------------------------')
 
+                i += 1
+                countIter += 1
+            if(perda < 0.22):
+                print('Fora do loop.')
+                print(f'count iterações = {countIter}')
+                print(f'epoca: {epoca}')
+                print(f'perda: {perda}')
+                break
     #}
 
     def erroQuadratico(self, esperado, obtido):
